@@ -1,5 +1,4 @@
 #!/bin/bash
-# NOTE: This program requires bash v4.0
 
 # Vars
 TITLE='vBoxSysInfoMod Linux Remake v1.0'
@@ -7,23 +6,23 @@ VBOXMAN=`which vboxmanage`
 
 # INTRO
 clear
-echo ---- vBoxSysInfoMod Linux Remake by burning\#0001 ----
+echo $TITLE
 echo 
-echo Originally a Windows batch script created by JayMontana36, this script is a remake for linux users
+echo Originally based on a Windows batch script created by JayMontana36, this script is a remake for linux users
 echo as there does not seem to be a linux alternative.
 echo 
 echo This script is licensed under the Creative Commons Atribution-NonCommercial-ShareAlike 4.0 International License.
 echo A copy of this licensed can be viewed at http://creativecommons.org/licenses/by-nc-sa/4.0/
 echo 
 echo If there are any issues or suggestions, please contact me by:
-echo Email - oneplusoneistu@gmail.com
 echo Discord - burning\#0001
-echo Github - http://github.com/oneplusoneistu/vBoxSysInfoModLinux/
+echo Github  - http://github.com/oneplusoneistu/vBoxSysInfoMod-linux/issues
 echo
-read -p 'Press enter to continue...'
+read -n 1 -s -r -p 'Press any key to continue...'
 
-if [ -z "$VBOXMAN" ]; then
-	echo ERROR: VirtualBoxManager not found, exiting...
+if [[ -z "$VBOXMAN" ]]; then
+	# TODO: Add way for user to input vboxmanage location
+	echo ERROR: VirtualBoxManager not found, please
 	exit
 fi
 
@@ -39,33 +38,28 @@ do
 	echo \"Exit\" - Exit program.
 	echo 
 	read -p '>> ' CMD
+	CMD=`echo $CMD | tr '[:upper:]' '[:lower:]'`
 
 	# MODIFYVM
-	if [ "${CMD,,}" = "modifyvm" ]; then
+	if [[ "$CMD" == "modifyvm" ]]; then
 		while true
 		do
 			clear
 			echo $TITLE
 			echo 
-
-			# List VMs
-			echo Registered VMs:
+			echo Registered VMs: # List VMs
 			eval $VBOXMAN list vms
 			echo
-			read -p 'Which VM would you like to modify? ' VMNAME
+			echo Which VM would you like to modify? [Last: \'$VMNAME\']
+			read -p '>> ' VMNAME
 			
 			# Find firmware
 			VMMODE=`"$VBOXMAN" showvminfo "$VMNAME" --machinereadable | grep firmware | tr "firmware=" "\n" | tr -d '[:space:]'`
-			# TODO: For some reason, when "$VMMODE" is equal to "BIOS", it doesn't match with "BIOS".
-			#       Fix this somehow.
-			if [ "BIOS" = "BIOS" ]; then
+			if [[ "$VMMODE" == *"BIOS"* ]] || [[ "$VMMODE" == *"bios"* ]]; then
 				FW="pcbios"
-				echo $FW
-			elif [ "${VMMODE,,}" = *"efi"* ]; then
+			elif [[ "$VMMODE" == *"EFI"* ]] || [[ "$VMMODE" == *"efi"* ]]; then
 				FW="efi"
-				echo $FW
 			else
-				read
 				continue
 			fi
 			
@@ -73,10 +67,11 @@ do
 			clear
 			echo $TITLE
 			echo
-			echo WARINING: Please ensure that all vBox VMs are safely closed as all vBox windows will be closed
+			echo WARINING: Please ensure that all vBox VMs are safely closed as all vBox-related windows will be closed
 			echo and failure to do so may result in result in corruption or data loss.
 			echo
-			read -p 'Press enter to continue...'
+			read -n 1 -s -r -p 'Press any key to continue...'
+			echo
 			killall VirtualBox
 
 			# Initial Information
@@ -102,59 +97,56 @@ do
 			echo "Modifying DMI System Information (type 1)..."
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVendor" "$SYSven"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemProduct" "$SYSprod"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVersion" "$((1 + RANDOM % 10)).$RANDOM"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVersion" "$((1 + RANDOM % 10)).$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemSerial" "string:$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemSKU" "string:$RANDOM"` # random
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemFamily" "<empty>"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemUUID" ""` # random # ERR
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemFamily" "<EMPTY>"`
+			#`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemUUID" ""` # Causes ERR
 
 			# DMI Board Information
 			echo "Modifying DMI Board Information (type 2)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVendor" "$SYSven"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVendor" "$SYSven"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardProduct" "$SYSprod"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVersion" "$((1 + RANDOM % 10)).$RANDOM"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardSerial" "string:$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardAssetTag" "string:$RANDOM"` # random
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardLocInChass" "<empty>"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardLocInChass" "<EMPTY>"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardBoardType" $((1 + RANDOM % 10))` # random
 
-			# DMI System Enclosure or Chassis
+			# DMI Processor Information
 			echo "Modifying DMI Processor Information (type 4)..."
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" "$SYSven"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" "$SYSprod"`
 			
+			VMNAME='' # Reset Var
+
 			echo Completed.
-			read -p 'Press enter to continue...'
+			echo
+			read -n 1 -s -r -p 'Press any key to continue...'
 			
 			break
 		done
 
 	# RESETVM
-	elif [ "${CMD,,}" = "resetvm" ]; then
+	elif [[ "$CMD" == "resetvm" ]]; then
 		while true
 		do
 			clear
 			echo $TITLE
 			echo 
-
-			# List VMs
-			echo Registered VMs:
+			echo Registered VMs: # List VMs
 			eval $VBOXMAN list vms
 			echo
-			read -p 'Which VM would you like to clear? ' VMNAME
-			
+			echo Which VM would you like to modify? [Last: \'$VMNAME\']
+			read -p '>> ' VMNAME
+
 			# Find firmware
 			VMMODE=`"$VBOXMAN" showvminfo "$VMNAME" --machinereadable | grep firmware | tr "firmware=" "\n" | tr -d '[:space:]'`
-			# TODO: For some reason, when "$VMMODE" is equal to "BIOS", it doesn't match with "BIOS".
-			#       Fix this somehow.
-			if [ "BIOS" = "BIOS" ]; then
+			if [[ "$VMMODE" == *"BIOS"* ]] || [[ "$VMMODE" == *"bios"* ]]; then
 				FW="pcbios"
-				echo $FW
-			elif [ "${VMMODE,,}" = *"efi"* ]; then
+			elif [[ "$VMMODE" == *"EFI"* ]] || [[ "$VMMODE" == *"efi"* ]]; then
 				FW="efi"
-				echo $FW
 			else
-				read
 				continue
 			fi
 			
@@ -163,19 +155,28 @@ do
 			echo
 			echo Clearing all DMI data for "$VMNAME".
 			echo WARNING: Are you sure you want to reset these settings?
-			echo          This will not affect the VMs performance. Only the displayed 
-			echo          data will be affected.
 			echo 
-			echo Y/N
-			read -p '>> ' INPUT
-			if [ "${INPUT,,}" = "n"* ]; then
+			echo \(Y/N\)
+			read -n 1 -p '>> ' INPUT
+			if [[ "$INPUT" == "N" ]] || [[ "$INPUT" == "n" ]]; then
 				break
-			elif [ "${INPUT,,}" = "y"* ]; then
+			elif [[ "$INPUT" == "Y" ]] || [[ "$INPUT" == "y" ]]; then
 				echo
 			else
 				continue
 			fi
 			
+			# Task Killer
+			clear
+			echo $TITLE
+			echo
+			echo WARINING: Please ensure that all vBox VMs are safely closed as all vBox-related windows will be closed
+			echo and failure to do so may result in result in corruption or data loss.
+			echo
+			read -n 1 -s -r -p 'Press any key to continue...'
+			echo
+			killall VirtualBox
+
 			echo Starting reset...
 			echo "Resetting DMI BIOS Information (type 0)..."
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVendor" ""`
@@ -198,7 +199,7 @@ do
 
 			# DMI Board Information
 			echo "Resetting DMI Board Information (type 2)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVendor" ""`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVendor" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardProduct" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVersion" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardSerial" ""`
@@ -206,17 +207,19 @@ do
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardLocInChass" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardBoardType" ""`
 
-			# DMI System Enclosure or Chassis
+			# DMI Processor Information
 			echo "Resetting DMI Processor Information (type 4)..."
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" ""`
 			
+			VMNAME='' # Reset Var
+			
 			echo Completed.
-			read -p 'Press enter to continue...'
+			read -n 1 -s -r -p 'Press any key to continue...'
 		done
 
 	# EXIT
-	elif [ "${CMD,,}" = "exit" ]; then
+	elif [[ "$CMD" == "exit" ]]; then
 		exit
 	fi
 done
