@@ -51,8 +51,14 @@ do
 			eval $VBOXMAN list vms
 			echo
 			echo Which VM would you like to modify? [Last: \'$VMNAME\']
+			echo \'q\' to quit
 			read -p '>> ' VMNAME
-			
+
+			if [[ "$VMNAME" == "q" ]] || [[ "$VMNAME" == "q" ]]; then
+				VMNAME=''
+				break	
+			fi
+
 			# Find firmware
 			VMMODE=`"$VBOXMAN" showvminfo "$VMNAME" --machinereadable | grep firmware | tr "firmware=" "\n" | tr -d '[:space:]'`
 			if [[ "$VMMODE" == *"BIOS"* ]] || [[ "$VMMODE" == *"bios"* ]]; then
@@ -118,7 +124,9 @@ do
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" "$SYSven"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" "$SYSprod"`
 			
-			VMNAME='' # Reset Var
+			# Reset Vars
+			VMNAME=''
+			FW=''
 
 			echo Completed.
 			echo
@@ -138,7 +146,13 @@ do
 			eval $VBOXMAN list vms
 			echo
 			echo Which VM would you like to modify? [Last: \'$VMNAME\']
+			echo \'q\' to quit
 			read -p '>> ' VMNAME
+
+			if [[ "$VMNAME" == "q" ]] || [[ "$VMNAME" == "q" ]]; then
+				VMNAME=''
+				break	
+			fi
 
 			# Find firmware
 			VMMODE=`"$VBOXMAN" showvminfo "$VMNAME" --machinereadable | grep firmware | tr "firmware=" "\n" | tr -d '[:space:]'`
@@ -177,6 +191,9 @@ do
 			echo
 			killall VirtualBox
 
+			clear
+			echo $TITLE
+			echo
 			echo Starting reset...
 			echo "Resetting DMI BIOS Information (type 0)..."
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVendor" ""`
@@ -212,7 +229,9 @@ do
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" ""`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" ""`
 			
-			VMNAME='' # Reset Var
+			# Reset Vars
+			VMNAME=''
+			FW=''
 			
 			echo Completed.
 			read -n 1 -s -r -p 'Press any key to continue...'
