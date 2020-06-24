@@ -2,7 +2,7 @@
 Originally based on a Windows batch script created by JayMontana36, this script is a simple adaption
 for linux VirtualBox users.
 
-This program is an easy and quick way to edit DMI information for a specified VirtualBox virtual machine.
+This program is an easy and quick way to edit BIOS DMI information for a specified VirtualBox virtual machine.
 It utilises VBoxManage and Bash so ensure they are installed on your system.
 
 ## Usage
