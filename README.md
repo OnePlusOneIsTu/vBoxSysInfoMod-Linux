@@ -6,11 +6,11 @@ This program is an easy and quick way to edit BIOS DMI information for a specifi
 It utilises VBoxManage and Bash so ensure they are installed on your system.
 
 ## Usage
-`./vBoxSysInfoMod-linux.sh` or
+`./vBoxSysInfoMod-linux.sh`
 
-`sh ./vBoxSysInfoMod-linux.sh` or
+or `sh ./vBoxSysInfoMod-linux.sh`
 
-`bash ./vBoxSysInfoMod-linux.sh`
+or `bash ./vBoxSysInfoMod-linux.sh`
 
 ## Credits/License
 All credits go to the original creator - JayMontana36.
