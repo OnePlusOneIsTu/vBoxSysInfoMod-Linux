@@ -7,7 +7,9 @@ It utilises VBoxManage and Bash so ensure they are installed on your system.
 
 ## Usage
 `./vBoxSysInfoMod-linux.sh` or
+
 `sh ./vBoxSysInfoMod-linux.sh` or
+
 `bash ./vBoxSysInfoMod-linux.sh`
 
 ## Credits/License
