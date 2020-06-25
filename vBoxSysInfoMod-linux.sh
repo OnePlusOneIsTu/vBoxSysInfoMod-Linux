@@ -21,9 +21,15 @@ echo
 read -n 1 -s -r -p 'Press any key to continue...'
 
 if [[ -z "$VBOXMAN" ]]; then
-	# TODO: Add way for user to input vboxmanage location
-	echo ERROR: VirtualBoxManager not found, please
-	exit
+	if [[ -f "/usr/bin/VBoxManage" ]]; then
+		VBOXMAN='/usr/bin/VBoxManage'
+	elif [[ -f "/usr/bin/vboxmanage" ]]; then
+		VBOXMAN='/usr/bin/vboxmanage'
+	else
+		echo
+		echo ERROR: VBoxManage could not be found. Please ensure it is installed on this system.
+		exit
+	fi
 fi
 
 # COMMANDS
@@ -86,14 +92,49 @@ do
 			echo
 			echo Modding the System
 			echo
-			read -p 'System Manufacturer: ' SYSven
-			read -p 'System Model: ' SYSprod
+			
+			# Default Vars
+			DEF_SYSman='LENOVO'
+			DEF_SYSprod='80SM'
+			DEF_BIOSman='American Megatrends Inc.'
+			DEF_BIOSver='F4'
+			DEF_PROCman='Intel(R)'
+			DEF_PROCver='Core(TM) i5'
+
+			echo Leave values blank for example settings.
+			read -p 'System Manufacturer (Default: "LENOVO"): ' SYSman
+			read -p 'System Model (Default: "80SM"): ' SYSprod
+			read -p 'BIOS Manufacturer (Default: "American Megatrends Inc."): ' BIOSman
+			read -p 'BIOS Version (Default: "F4"): ' BIOSver
+			read -p 'Processor Manufacturer (Default: "Intel(R)"): ' PROCman
+			read -p 'Processor Version (Default: "Core(TM) i5"): ' PROCver
+			
+			# Check values
+			if [[ -z "$SYSman" ]]; then
+				SYSman=$DEF_SYSman
+			fi
+			if [[ -z "$SYSprod" ]]; then
+				SYSprod=$DEF_SYSprod
+			fi
+			if [[ -z "$BIOSman" ]]; then
+				BIOSman=$DEF_BIOSman
+			fi
+			if [[ -z "$BIOSver" ]]; then
+				BIOSver=$DEF_BIOSver
+			fi
+			if [[ -z "$PROCman" ]]; then
+				PROCman=$DEF_PROCman
+			fi
+			if [[ -z "$PROCver" ]]; then
+				PROCver=$DEF_PROCver
+			fi
+
 			echo
 			echo Starting modifications...
 			echo "Modifying DMI BIOS Information (type 0)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVendor" "$SYSven"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVersion" "$SYSprod"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSReleaseDate" "12/01/2006"` # random
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVendor" "string:$BIOSman"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSVersion" "string:$BIOSver"` # random
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSReleaseDate" "12/01/2006"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSReleaseMajor" $((0 + RANDOM % 9))` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSReleaseMinor" $((0 + RANDOM % 9))` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBIOSFirmwareMajor" $((0 + RANDOM % 9))` # random
@@ -101,9 +142,9 @@ do
 			
 			# DMI System Information
 			echo "Modifying DMI System Information (type 1)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVendor" "$SYSven"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemProduct" "$SYSprod"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVersion" "$((1 + RANDOM % 10)).$RANDOM"` # random
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVendor" "string:$SYSman"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemProduct" "string:$SYSprod"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemVersion" "$((1 + RANDOM % 10)).$((0 + RANDOM % 99))"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemSerial" "string:$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemSKU" "string:$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiSystemFamily" "<EMPTY>"`
@@ -111,8 +152,8 @@ do
 
 			# DMI Board Information
 			echo "Modifying DMI Board Information (type 2)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVendor" "$SYSven"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardProduct" "$SYSprod"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVendor" "string:$SYSman"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardProduct" "string:$SYSprod"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardVersion" "$((1 + RANDOM % 10)).$RANDOM"`
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardSerial" "string:$RANDOM"` # random
 			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiBoardAssetTag" "string:$RANDOM"` # random
@@ -121,12 +162,18 @@ do
 
 			# DMI Processor Information
 			echo "Modifying DMI Processor Information (type 4)..."
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" "$SYSven"`
-			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" "$SYSprod"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcManufacturer" "string:$PROCman"`
+			`"$VBOXMAN" setextradata "$VMNAME" "VBoxInternal/Devices/$FW/0/Config/DmiProcVersion" "string:$PROCver"`
 			
 			# Reset Vars
 			VMNAME=''
 			FW=''
+			SYSman=''
+			SYSprod=''
+			BIOSman=''
+			BIOSver=''
+			PROCman=''
+			PROCver=''
 
 			echo Completed.
 			echo

@@ -1,0 +1,18 @@
+ - Examples of Potential Values -
+
+Please Note:
+ - These are just examples, they may not be 100% accurate manufacturers or models to use with this program.
+ Any values you use to modify your virtual machine with are used with your own discretion. The creator of these examples
+ will not be held responsible for any misconfigurations within your system configs.
+
+System Manufacturers + Models:
+ * ABS Computer Technologies - Rogue SE
+ * Acer                      - SF714-52T-70CE
+ * Alienware                 - M17 R3
+ * ASRock                    - DeskMini A300
+ * Asus                      - ROG Zephyrus S15
+ * Dell                      - Inspiron
+ * Hewlett-Packard (HP)      - Pavilion 13-an1050tu
+ * Lenovo                    - ThinkPad T440
+ * Razer                     - Blade 15
+ * Samsung                   - Notebook 9 Pro
