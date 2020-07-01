@@ -11,8 +11,8 @@ System Manufacturers + Models:
  * Alienware                 - M17 R3
  * ASRock                    - DeskMini A300
  * Asus                      - ROG Zephyrus S15
- * Dell                      - Inspiron
- * Hewlett-Packard (HP)      - Pavilion 13-an1050tu
+ * Dell Inc.                 - Inspiron
+ * Hewlett-Packard           - Pavilion 13-an1050tu
  * Lenovo                    - ThinkPad T440
  * Razer                     - Blade 15
  * Samsung                   - Notebook 9 Pro
