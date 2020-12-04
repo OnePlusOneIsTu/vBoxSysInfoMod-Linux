@@ -112,7 +112,7 @@ do
 			DEF_PROCver='Core(TM) i5'
 
 			echo Leave values blank for example settings.
-			read -p 'System Manufacturer (Default: "$DEF_SYSman"): ' SYSman
+			read -p 'System Manufacturer (Default: "LENOVO"): ' SYSman
 			read -p 'System Model (Default: "80SM"): ' SYSprod
 			read -p 'BIOS Manufacturer (Default: "American Megatrends Inc."): ' BIOSman
 			read -p 'BIOS Version (Default: "F4"): ' BIOSver
