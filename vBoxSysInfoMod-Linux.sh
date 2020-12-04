@@ -50,6 +50,16 @@ do
 	if [[ "$CMD" == "modifyvm" ]]; then
 		while true
 		do
+			# Clear last settings
+			SYSman=''
+			SYSprod=''
+			BIOSman=''
+			BIOSver=''
+			PROCman=''
+			PROCver=''
+         VMNAME=''
+			FW=''
+			
 			clear
 			echo $TITLE
 			echo 
@@ -100,17 +110,9 @@ do
 			DEF_BIOSver='F4'
 			DEF_PROCman='Intel(R)'
 			DEF_PROCver='Core(TM) i5'
-			SYSman=''
-			SYSprod=''
-			BIOSman=''
-			BIOSver=''
-			PROCman=''
-			PROCver=''
-            VMNAME=''
-			FW=''
 
 			echo Leave values blank for example settings.
-			read -p 'System Manufacturer (Default: "LENOVO"): ' SYSman
+			read -p 'System Manufacturer (Default: "$DEF_SYSman"): ' SYSman
 			read -p 'System Model (Default: "80SM"): ' SYSprod
 			read -p 'BIOS Manufacturer (Default: "American Megatrends Inc."): ' BIOSman
 			read -p 'BIOS Version (Default: "F4"): ' BIOSver
